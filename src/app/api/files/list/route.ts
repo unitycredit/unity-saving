@@ -11,6 +11,7 @@ export async function GET(req: Request) {
 
   const prefixEnv = (process.env.UNITY_S3_PREFIX ?? "").trim().replace(/^\/+|\/+$/g, "");
   const prefix = prefixEnv ? `${prefixEnv}/${folder}/` : `${folder}/`;
+  const envPrefixWithSlash = prefixEnv ? `${prefixEnv}/` : "";
 
   const s3 = getS3Client();
   const bucket = getBucketName();
@@ -19,9 +20,22 @@ export async function GET(req: Request) {
     new ListObjectsV2Command({
       Bucket: bucket,
       Prefix: prefix,
+      Delimiter: "/",
       MaxKeys: 200,
     }),
   );
+
+  const folders =
+    out.CommonPrefixes?.map((p) => {
+      const fullPrefix = p.Prefix ?? "";
+      const withoutEnv =
+        envPrefixWithSlash && fullPrefix.startsWith(envPrefixWithSlash)
+          ? fullPrefix.slice(envPrefixWithSlash.length)
+          : fullPrefix;
+      const path = withoutEnv.replace(/\/+$/g, "");
+      const name = path.split("/").pop() ?? path;
+      return { name, path, prefix: fullPrefix };
+    }).filter((f) => f.path && f.path !== folder) ?? [];
 
   const items =
     out.Contents?.filter((o) => o.Key && o.Key !== prefix).map((o) => ({
@@ -31,7 +45,7 @@ export async function GET(req: Request) {
       lastModified: o.LastModified?.toISOString() ?? null,
     })) ?? [];
 
-  return NextResponse.json({ folder, prefix, items });
+  return NextResponse.json({ folder, prefix, folders, items });
 }
 
 
