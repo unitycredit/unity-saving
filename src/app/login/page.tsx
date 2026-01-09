@@ -3,6 +3,9 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { LockKeyhole } from "lucide-react";
+
+import { AuthShell } from "@/components/AuthShell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -45,26 +48,30 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen px-4 flex items-center justify-center bg-gradient-to-b from-zinc-950 via-zinc-950 to-zinc-900">
-      <Card className="w-full max-w-md border-zinc-800/60 bg-zinc-950/60 backdrop-blur">
-        <CardHeader>
-          <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-indigo-500/30 to-fuchsia-500/20 border border-white/10" />
-              <div>
-                <CardTitle className="leading-tight">Sign in</CardTitle>
-                <CardDescription>Continue to your dashboard.</CardDescription>
+    <AuthShell>
+      <Card className="overflow-hidden">
+        <CardHeader className="flex-col items-start gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-3xl border border-black/5 bg-white/70">
+              <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0066FF] to-[#6EA8FF]">
+                <LockKeyhole className="h-5 w-5 text-white" />
               </div>
             </div>
-            <p className="text-xs text-zinc-400">
-              Uses AWS Cognito. Your session is stored in a short-lived cookie on this device.
-            </p>
+            <div className="min-w-0">
+              <div className="text-xs font-semibold tracking-wider text-slate-500">Unity Saving</div>
+              <CardTitle className="mt-1 text-2xl leading-tight">Sign in</CardTitle>
+              <CardDescription>Access your secure financial drive.</CardDescription>
+            </div>
           </div>
+
+          <p className="text-xs text-slate-500">
+            Uses AWS Cognito. Your session is stored in a short-lived cookie on this device.
+          </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-sm text-zinc-300" htmlFor="username">
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-slate-700" htmlFor="username">
                 Email or username
               </label>
               <Input
@@ -77,14 +84,14 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <div className="flex items-center justify-between gap-3">
-                <label className="text-sm text-zinc-300" htmlFor="password">
+                <label className="text-sm font-medium text-slate-700" htmlFor="password">
                   Password
                 </label>
                 <button
                   type="button"
-                  className="text-xs text-zinc-400 hover:text-zinc-200"
+                  className="text-xs font-medium text-slate-500 hover:text-slate-700"
                   onClick={() => setShowPassword((v) => !v)}
                   aria-pressed={showPassword}
                 >
@@ -106,7 +113,7 @@ export default function LoginPage() {
             {error ? (
               <p
                 role="alert"
-                className="text-sm text-red-200 border border-red-500/30 bg-red-500/10 rounded-xl px-3 py-2"
+                className="rounded-2xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-700"
               >
                 {error}
               </p>
@@ -121,21 +128,21 @@ export default function LoginPage() {
               {isSubmitting ? "Signing in…" : "Sign in"}
             </Button>
 
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-slate-500">
               Tip: if you were redirected here, you’ll be sent back to{" "}
-              <span className="text-zinc-300">{redirectTo}</span> after sign-in.
+              <span className="font-medium text-slate-700">{redirectTo}</span> after sign-in.
             </p>
 
-            <p className="text-xs text-zinc-500 text-center">
+            <p className="text-xs text-slate-500 text-center">
               New here?{" "}
-              <Link href="/signup" className="text-zinc-200 hover:underline">
+              <Link href="/signup" className="font-medium text-slate-900 hover:underline">
                 Create an account
               </Link>
             </p>
           </form>
         </CardContent>
       </Card>
-    </main>
+    </AuthShell>
   );
 }
 

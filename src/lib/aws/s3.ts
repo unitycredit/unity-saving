@@ -28,8 +28,8 @@ export function getS3Client() {
 
 export function normalizeFolder(folder: string) {
   const cleaned = folder.trim().replace(/^\/+|\/+$/g, "");
-  if (!cleaned) return "Documents";
-  if (cleaned.includes("..")) return "Documents";
+  if (!cleaned) return "Bank Statements";
+  if (cleaned.includes("..")) return "Bank Statements";
   return cleaned;
 }
 
@@ -45,6 +45,24 @@ export function objectKey(folder: string, fileName: string) {
       .slice(0, 180) || "file";
 
   const base = `${safeFolder}/${safeName}`;
+  return prefix ? `${prefix}/${base}` : base;
+}
+
+function s3Prefix() {
+  return (process.env.UNITY_S3_PREFIX ?? "").trim().replace(/^\/+|\/+$/g, "");
+}
+
+export function safeUserId(userId: string) {
+  const cleaned = userId.trim().slice(0, 120);
+  // Keep the path stable and safe.
+  return cleaned.replace(/[^a-zA-Z0-9_-]/g, "_") || "user";
+}
+
+export function userDataKey(userId: string, fileName: string) {
+  const prefix = s3Prefix();
+  const safeId = safeUserId(userId);
+  const safeName = fileName.trim().replaceAll("\\", "/").split("/").pop()?.trim() || "data.json";
+  const base = `.unity-saving/${safeId}/${safeName}`;
   return prefix ? `${prefix}/${base}` : base;
 }
 

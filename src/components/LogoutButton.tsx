@@ -7,7 +7,13 @@ import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { clearAuthCookies } from "@/lib/auth";
 
-export function LogoutButton() {
+export function LogoutButton(props: {
+  variant?: "primary" | "secondary" | "ghost";
+  size?: "sm" | "md";
+  className?: string;
+  label?: string;
+}) {
+  const { variant = "ghost", size = "sm", className, label = "Log Out" } = props;
   const router = useRouter();
   const [busy, setBusy] = React.useState(false);
 
@@ -18,9 +24,16 @@ export function LogoutButton() {
   }
 
   return (
-    <Button variant="ghost" size="sm" onClick={onLogout} disabled={busy} aria-label="Logout">
+    <Button
+      variant={variant}
+      size={size}
+      onClick={onLogout}
+      disabled={busy}
+      aria-label={label}
+      className={className}
+    >
       <LogOut className="h-4 w-4" />
-      <span>{busy ? "Signing out…" : "Logout"}</span>
+      <span>{busy ? "Signing out…" : label}</span>
     </Button>
   );
 }

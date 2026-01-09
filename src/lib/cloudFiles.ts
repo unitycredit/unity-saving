@@ -3,6 +3,9 @@ export type ListedFile = {
   name: string;
   size: number;
   lastModified: string | null;
+  // Present when listing the entire bucket/prefix (folder="__all__").
+  // Path is relative to UNITY_S3_PREFIX (if set) and does not include the file name.
+  path?: string;
 };
 
 export type ListedFolder = {
@@ -57,7 +60,38 @@ export async function presignDownload(params: { key: string }) {
     const text = await res.text().catch(() => "");
     throw new Error(text || `Presign download failed: ${res.status}`);
   }
-  return (await res.json()) as { key: string; url: string; method: "GET" };
+  return (await res.json()) as {
+    key: string;
+    url: string;
+    method: "GET";
+    disposition?: "inline" | "attachment";
+  };
+}
+
+export async function presignDownloadAttachment(params: { key: string }) {
+  const res = await fetch("/api/files/presign-get", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ key: params.key, disposition: "attachment" }),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(text || `Presign download failed: ${res.status}`);
+  }
+  return (await res.json()) as { key: string; url: string; method: "GET"; disposition: "attachment" };
+}
+
+export async function deleteFile(params: { key: string }) {
+  const res = await fetch("/api/files/delete", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(params),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(text || `Delete failed: ${res.status}`);
+  }
+  return (await res.json()) as { ok: true; key: string };
 }
 
 

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BadgeCheck, Mail, ShieldCheck } from "lucide-react";
 
+import { AuthShell } from "@/components/AuthShell";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -24,23 +25,29 @@ function PasswordStrength({ value }: { value: string }) {
   const score = [c.hasMin, c.hasUpper, c.hasLower, c.hasNum, c.hasSym].filter(Boolean).length;
   const label = score <= 2 ? "Weak" : score === 3 ? "Good" : score === 4 ? "Strong" : "Excellent";
   const bar =
-    score <= 2 ? "bg-red-400/60" : score === 3 ? "bg-amber-300/60" : score === 4 ? "bg-emerald-300/60" : "bg-emerald-300";
+    score <= 2
+      ? "bg-red-400/70"
+      : score === 3
+        ? "bg-amber-300/80"
+        : score === 4
+          ? "bg-[#0066FF]/60"
+          : "bg-[#0066FF]";
 
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between text-xs">
-        <span className="text-zinc-500">Password strength</span>
-        <span className="text-zinc-300">{label}</span>
+        <span className="text-slate-500">Password strength</span>
+        <span className="font-medium text-slate-700">{label}</span>
       </div>
-      <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-black/5">
         <div className={`h-full ${bar}`} style={{ width: `${(score / 5) * 100}%` }} />
       </div>
       <div className="grid grid-cols-2 gap-2 text-xs">
-        <div className={c.hasMin ? "text-emerald-300" : "text-zinc-500"}>8+ chars</div>
-        <div className={c.hasUpper ? "text-emerald-300" : "text-zinc-500"}>Uppercase</div>
-        <div className={c.hasLower ? "text-emerald-300" : "text-zinc-500"}>Lowercase</div>
-        <div className={c.hasNum ? "text-emerald-300" : "text-zinc-500"}>Number</div>
-        <div className={c.hasSym ? "text-emerald-300" : "text-zinc-500"}>Symbol</div>
+        <div className={c.hasMin ? "text-[#0066FF]" : "text-slate-500"}>8+ chars</div>
+        <div className={c.hasUpper ? "text-[#0066FF]" : "text-slate-500"}>Uppercase</div>
+        <div className={c.hasLower ? "text-[#0066FF]" : "text-slate-500"}>Lowercase</div>
+        <div className={c.hasNum ? "text-[#0066FF]" : "text-slate-500"}>Number</div>
+        <div className={c.hasSym ? "text-[#0066FF]" : "text-slate-500"}>Symbol</div>
       </div>
     </div>
   );
@@ -101,28 +108,39 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="min-h-screen px-4 flex items-center justify-center bg-gradient-to-b from-zinc-950 via-zinc-950 to-zinc-900">
-      <Card className="w-full max-w-lg border-zinc-800/60 bg-zinc-950/60 backdrop-blur">
-        <CardHeader>
-          <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-emerald-500/25 to-indigo-500/20">
-                <ShieldCheck className="h-5 w-5 text-zinc-100" />
-              </div>
-              <div>
-                <CardTitle className="leading-tight">Create your account</CardTitle>
-                <CardDescription>Secure signup powered by AWS Cognito.</CardDescription>
+    <AuthShell>
+      <Card className="overflow-hidden">
+        <CardHeader className="flex-col items-start gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-3xl border border-black/5 bg-white/70">
+              <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0066FF] to-[#6EA8FF]">
+                <ShieldCheck className="h-5 w-5 text-white" />
               </div>
             </div>
+            <div className="min-w-0">
+              <div className="text-xs font-semibold tracking-wider text-slate-500">Unity Saving</div>
+              <CardTitle className="mt-1 text-2xl leading-tight">
+                {step === "signup" ? "Create your account" : "Verify your email"}
+              </CardTitle>
+              <CardDescription>
+                {step === "signup"
+                  ? "A secure signup for your Unity Saving drive (AWS Cognito)."
+                  : "Enter the 6-digit code we sent to your email."}
+              </CardDescription>
+            </div>
           </div>
+
+          <p className="text-xs text-slate-500">
+            Uses AWS Cognito. Your session is stored in a short-lived cookie on this device.
+          </p>
         </CardHeader>
 
         <CardContent>
           {step === "signup" ? (
             <form onSubmit={onSubmitSignup} className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-1">
-                  <label className="text-sm text-zinc-300" htmlFor="firstName">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-slate-700" htmlFor="firstName">
                     First name
                   </label>
                   <Input
@@ -134,8 +152,8 @@ export default function SignupPage() {
                     required
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-sm text-zinc-300" htmlFor="lastName">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-slate-700" htmlFor="lastName">
                     Last name
                   </label>
                   <Input
@@ -149,12 +167,12 @@ export default function SignupPage() {
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-sm text-zinc-300" htmlFor="email">
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-slate-700" htmlFor="email">
                   Email
                 </label>
                 <div className="relative">
-                  <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+                  <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                   <Input
                     id="email"
                     type="email"
@@ -169,7 +187,7 @@ export default function SignupPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-zinc-300" htmlFor="password">
+                <label className="text-sm font-medium text-slate-700" htmlFor="password">
                   Password
                 </label>
                 <Input
@@ -187,7 +205,7 @@ export default function SignupPage() {
               {error ? (
                 <p
                   role="alert"
-                  className="text-sm text-red-200 border border-red-500/30 bg-red-500/10 rounded-xl px-3 py-2"
+                  className="rounded-2xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-700"
                 >
                   {error}
                 </p>
@@ -197,27 +215,27 @@ export default function SignupPage() {
                 {isSubmitting ? "Creating…" : "Create account"}
               </Button>
 
-              <p className="text-xs text-zinc-500 text-center">
+              <p className="text-xs text-slate-500 text-center">
                 Already have an account?{" "}
-                <Link href="/login" className="text-zinc-200 hover:underline">
+                <Link href="/login" className="font-medium text-slate-900 hover:underline">
                   Sign in
                 </Link>
               </p>
             </form>
           ) : (
             <form onSubmit={onSubmitConfirm} className="space-y-4">
-              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-300">
-                <div className="flex items-center gap-2 font-medium text-white">
-                  <BadgeCheck className="h-4 w-4 text-emerald-300" />
+              <div className="rounded-2xl border border-black/5 bg-white/60 px-4 py-3 text-sm text-slate-700">
+                <div className="flex items-center gap-2 font-semibold text-slate-900">
+                  <BadgeCheck className="h-4 w-4 text-[#0066FF]" />
                   Verify your email
                 </div>
-                <div className="mt-1 text-xs text-zinc-400">
-                  Enter the 6-digit code sent to <span className="text-zinc-200">{email}</span>.
+                <div className="mt-1 text-xs text-slate-500">
+                  Enter the 6-digit code sent to <span className="font-medium text-slate-700">{email}</span>.
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-sm text-zinc-300" htmlFor="code">
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-slate-700" htmlFor="code">
                   Verification code
                 </label>
                 <Input
@@ -234,7 +252,7 @@ export default function SignupPage() {
               {error ? (
                 <p
                   role="alert"
-                  className="text-sm text-red-200 border border-red-500/30 bg-red-500/10 rounded-xl px-3 py-2"
+                  className="rounded-2xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-700"
                 >
                   {error}
                 </p>
@@ -249,9 +267,9 @@ export default function SignupPage() {
                 </Button>
               </div>
 
-              <p className="text-xs text-zinc-500 text-center">
+              <p className="text-xs text-slate-500 text-center">
                 Prefer to sign in instead?{" "}
-                <Link href="/login" className="text-zinc-200 hover:underline">
+                <Link href="/login" className="font-medium text-slate-900 hover:underline">
                   Sign in
                 </Link>
               </p>
@@ -259,7 +277,7 @@ export default function SignupPage() {
           )}
         </CardContent>
       </Card>
-    </main>
+    </AuthShell>
   );
 }
 

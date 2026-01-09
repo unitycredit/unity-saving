@@ -10,9 +10,9 @@ export function Input({
   return (
     <input
       className={cn(
-        "h-10 w-full rounded-xl border border-white/10 bg-white/5 px-3 text-sm text-white",
-        "placeholder:text-zinc-500",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/15 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950",
+        "h-11 w-full rounded-2xl border border-black/10 bg-white/70 px-4 text-sm text-slate-900",
+        "placeholder:text-slate-400",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF]/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F9FAFB]",
         className,
       )}
       {...props}

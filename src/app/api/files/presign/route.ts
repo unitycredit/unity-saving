@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     | { folder?: string; fileName?: string; contentType?: string }
     | null;
 
-  const folder = normalizeFolder(body?.folder ?? "Documents");
+  const folder = normalizeFolder(body?.folder ?? "Bank Statements");
   const fileName = body?.fileName?.trim() || "file";
   const contentType = body?.contentType?.trim() || "application/octet-stream";
 
